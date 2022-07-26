@@ -1,6 +1,6 @@
 # vue-composition-api-basics
 
-This template should help get you started developing with Vue 3 in Vite.
+Converting simple counter app from vue 2 options api to composition api.
 
 ## Recommended IDE Setup
 
