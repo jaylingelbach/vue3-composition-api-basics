@@ -1,72 +1,75 @@
 <template>
 <div class="home"> 
+  <h2> {{ appTitle }}</h2>
+  <h3>{{ counterData.title }}: </h3>
   <div>
-    <button @click="decreaseCounter" class="btn">-</button>
-    <span class="counter">{{ counter }}</span>
-    <button @click="increaseCounter" class="btn">+</button>
+    <button @click="decreaseCounter(1)" class="btn">-</button>
+    <span class="counter">{{ counterData.count }}</span>
+    <button @click="increaseCounter(1)" class="btn">+</button>
   </div>
+
+    <div class="edit">
+      <h4>Edit counter title:</h4>
+      <input v-model="counterData.title" type="text"/>
+    </div>
+
+    <p>This counter is {{ oddOrEven }}</p>
+
 </div>
 </template>
 
-<!-- Superior "Script Function" pattern released after "setup pattern" -->
-
 <script setup>
-  import { ref } from 'vue';
+  import { reactive, computed, watch } from 'vue';
 
-  const counter = ref(0);
+  // non-reactive
+  const appTitle = 'My counter app';
 
-  const increaseCounter = () => {
-    counter.value++;
+  // reactive
+  const counterData = reactive({
+    count: 0,
+    title: 'My title',
+  })
+
+  // Note that you can't watch a property of a reactive object that is nested
+  // so used a getter to get it, 2nd param method
+  watch(() => counterData.count, (newCount) => {
+    if(newCount == 10) alert('Awwww yeah boi!')
+  }) 
+
+  const oddOrEven = computed(() => {
+    if (counterData.count % 2 === 0) return 'even'
+    return 'odd'
+  })
+
+  const increaseCounter = amount => {
+    counterData.count += amount;
   }
 
-  const decreaseCounter = () => {
-    counter.value--;
+  const decreaseCounter = amount => {
+    counterData.count-= amount;
   }
 </script>
 
-<!-- original to Vue3 "setup function" pattern
-<script>
-import { ref } from 'vue';
-export default {
-  setup() {
-    const counter = ref(0);
-
-    const increaseCounter = () => {
-      counter.value++;
-    }
-
-    const decreaseCounter = () => {
-      counter.value--;
-    }
-    
-    return {
-      counter,
-      increaseCounter,
-      decreaseCounter
-    }
-  },
-}
-</script>
--->
-
-
-<!-- <script> Vue 2 "options" pattern
+<!-- Options api computed property 
 export default {
   data() {
     return {
-      counter: 0
+      count: 0
+    }
+  }
+  computed: {
+    myComputedProperty() {
+      // perform logic based on data prop
+      return 'my result';
     }
   },
-  methods: {
-    increaseCounter() {
-      this.counter++;
-    },
-    decreaseCounter() {
-      this.counter--;
+  watch: {
+    count(newCount, oldCount) {
+      if newCount == 20 alert('awww yeah boi!')
     }
   }
 }
-</script>
+
 -->
 
 <style>
@@ -77,5 +80,8 @@ export default {
 .btn, .counter {
   font-size: 40px;
   margin: 10px;
+}
+.edit {
+  margin-top: 60px;
 }
 </style>
